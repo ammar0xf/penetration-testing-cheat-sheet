@@ -620,11 +620,7 @@ Check if any IP belongs to [GitHub](https://github.com) organization, more info 
 
 ### ASNmap
 
-Installation:
-
-```bash
-go install -v github.com/projectdiscovery/asnmap/cmd/asnmap@latest
-```
+Download the latest version from [GitHub](https://github.com/projectdiscovery/asnmap/releases).
 
 Gather [CIDRs](https://www.arin.net/resources/guide/asn) from ASN:
 
