@@ -68,6 +68,7 @@ My other cheat sheets:
 * [DNSRecon](#dnsrecon)
 * [host](#host)
 * [WHOIS, ASN, CIDR](#whois-asn-cidr)
+* [ASNmap](#asnmap)
 * [httpx](#httpx)
 * [gau](#gau)
 * [urlhunter](#urlhunter)
@@ -447,13 +448,13 @@ Amass has built-in DNS resolvers.
 
 To find ASNs from IPs and CIDRs from ASNs, use [WHOIS](#whois-asn-cidr). The below ASN and CIDR scans will take a long time to finish. **The results might not be all within your scope!**
 
-Gather subdomains by the [ASN](https://www.arin.net/resources/guide/asn):
+Gather subdomains from [ASN](https://www.arin.net/resources/guide/asn):
 
 ```fundamental
 amass intel -o amass_asn_results.txt -trf resolvers.txt -asn 13337
 ```
 
-Gather subdomains by the [CIDR](https://aws.amazon.com/what-is/cidr):
+Gather subdomains from [CIDR](https://aws.amazon.com/what-is/cidr):
 
 ```fundamental
 amass intel -o amass_cidr_results.txt -trf resolvers.txt -cidr 192.168.8.0/24
@@ -591,7 +592,7 @@ grep -Po '(?<=\|\ )[^\s]+' subdomains_to_cnames.txt | sort -uf | tee -a cnames.t
 
 ### WHOIS, ASN, CIDR
 
-Gather [ASNs](https://www.arin.net/resources/guide/asn) for the given IPs:
+Gather [ASNs](https://www.arin.net/resources/guide/asn) from IPs:
 
 ```bash
 for ip in $(cat ips.txt); do res=$(whois -h whois.cymru.com "${ip}" | grep -Poi '^\d+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_asns.txt
@@ -599,7 +600,7 @@ for ip in $(cat ips.txt); do res=$(whois -h whois.cymru.com "${ip}" | grep -Poi 
 grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_asns.txt | sort -uf | tee -a asns.txt
 ```
 
-Gather [CIDRs](https://www.arin.net/resources/guide/asn) for the given ASNs:
+Gather [CIDRs](https://www.arin.net/resources/guide/asn) from ASNs:
 
 ```bash
 for asn in $(cat asns.txt); do res=$(whois -h whois.radb.net -i origin "AS${asn}" | grep -Poi '(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}\/[0-9]+'); if [[ ! -z $res ]]; then echo "AS${asn} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a asns_to_cidrs.txt
@@ -607,7 +608,7 @@ for asn in $(cat asns.txt); do res=$(whois -h whois.radb.net -i origin "AS${asn}
 grep -Po '(?<=\|\ )(?(?!\ \|).)+' asns_to_cidrs.txt | sort -uf | tee -a cidrs.txt
 ```
 
-\[Subdomain Takeover\] Gather organization names (and more) for the given IPs:
+\[Subdomain Takeover\] Gather organization names (and more) from IPs:
 
 ```bash
 for ip in $(cat ips.txt); do res=$(whois -h whois.arin.net "${ip}" | grep -Po '(?<=OrgName\:)[\s]+\K.+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_organization_names.txt
@@ -616,6 +617,26 @@ grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_organization_names.txt | sort -uf | tee
 ```
 
 Check if any IP belongs to [GitHub](https://github.com) organization, more info about GitHub takeover in this [article](https://www.hackerone.com/application-security/guide-subdomain-takeovers).
+
+### ASNmap
+
+Installation:
+
+```bash
+go install -v github.com/projectdiscovery/asnmap/cmd/asnmap@latest
+```
+
+Gather [CIDRs](https://www.arin.net/resources/guide/asn) from ASN:
+
+```fundamental
+asnmap -silent -j -r resolvers.txt -a asn
+```
+
+Gather [CIDRs](https://www.arin.net/resources/guide/asn) from organization ID:
+
+```fundamental
+asnmap -silent -j -r resolvers.txt -org id
+```
 
 ### httpx
 
