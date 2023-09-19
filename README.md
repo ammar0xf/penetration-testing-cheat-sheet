@@ -629,13 +629,13 @@ go install -v github.com/projectdiscovery/asnmap/cmd/asnmap@latest
 Gather [CIDRs](https://www.arin.net/resources/guide/asn) from ASN:
 
 ```fundamental
-asnmap -silent -j -r resolvers.txt -a asn
+asnmap -silent -r resolvers.txt -a asn | tee -a asnmap_cidr_results.txt
 ```
 
 Gather [CIDRs](https://www.arin.net/resources/guide/asn) from organization ID:
 
 ```fundamental
-asnmap -silent -j -r resolvers.txt -org id
+asnmap -silent -r resolvers.txt -org id | tee -a asnmap_cidr_results.txt
 ```
 
 ### httpx
