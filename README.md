@@ -848,7 +848,7 @@ All DirBuster's wordlists are located at `/usr/share/dirbuster/wordlists/` direc
 Brute force directories on a web server:
 
 ```fundamental
-cat subdomains_live_long.txt | feroxbuster -q --auto-bail --random-agent -t 50 -T 3 -k -n --stdin -o feroxbuster_results.txt -s 200,301,302,401,403 -w directory-list-lowercase-2.3-medium.txt
+cat subdomains_live_long.txt | feroxbuster --stdin --silent -k -n --auto-bail --random-agent -t 50 -T 3 --json -o feroxbuster_results.txt -s 200,301,302,401,403 -w directory-list-lowercase-2.3-medium.txt
 ```
 
 This tool seems to be faster than [DirBuster](#dirbuster).
@@ -856,13 +856,17 @@ This tool seems to be faster than [DirBuster](#dirbuster).
 Filter directories from the results:
 
 ```bash
-grep -Po '(?<=200)\K.+\K(?<=c\ )[^\s]+' feroxbuster_results.txt | sort -uf | tee -a directories_200.txt
+jq -r 'select(.status >= 200 and .status < 300) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_2xx.txt
 
-grep -Po '(?<=301|302)\K.+\K(?<=c\ )[^\s]+' feroxbuster_results.txt | sort -uf | tee -a directories_3xx.txt
+jq -r 'select(.status >= 300 and .status < 400) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_3xx.txt
 
-grep -Po '(?<=401)\K.+\K(?<=c\ )[^\s]+' feroxbuster_results.txt | sort -uf | tee -a directories_401.txt
+jq -r 'select(.status < 300 and .status >= 400) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_3xx_none.txt
 
-grep -Po '(?<=403)\K.+\K(?<=c\ )[^\s]+' feroxbuster_results.txt | sort -uf | tee -a directories_403.txt
+jq -r 'select(.status >= 400 and .status < 500) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_4xx.txt
+
+jq -r 'select(.status == 401) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_401.txt
+
+jq -r 'select(.status == 403) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_403.txt
 ```
 
 | Option | Description |
