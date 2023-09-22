@@ -106,7 +106,7 @@ My other cheat sheets:
 * [subjack](#subjack)
 * [Nuclei](#Nuclei)
 * [WFUZZ](#wfuzz)
-* [Insecure Direct Object Reference (IDOR)](#insecure-direct-object-references-idor)
+* [Insecure Direct Object Reference (IDOR)](#insecure-direct-object-reference-idor)
 * [HTTP Response Splitting](#http-response-splitting)
 * [Cross-Site Scripting \(XSS\)](#cross-site-scripting-xss)
 * [SQL Injection](#sql-injection)
